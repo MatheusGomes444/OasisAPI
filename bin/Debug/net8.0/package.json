@@ -1,0 +1,31 @@
+{
+    "name": "nova-pasta",
+    "version": "1.0.0",
+    "description": "Este é um projeto de exemplo para a aplicação Nova Pasta.",
+    "main": "Controllers/index.js",
+    "type": "module",
+    "engines": {
+        "node": "14.x"
+    },
+    "scripts": {
+        "start": "node Controllers/index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "mongoose": "^5.10.9"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.4"
+    },
+    "author": "Seu Nome",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/seu-usuario/nova-pasta.git"
+    },
+    "bugs": {
+        "url": "https://github.com/seu-usuario/nova-pasta/issues"
+    },
+    "homepage": "https://github.com/seu-usuario/nova-pasta#readme"
+}
