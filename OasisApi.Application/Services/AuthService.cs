@@ -3,6 +3,7 @@ using OasisApi.Application.Exceptions;
 using OasisApi.Application.Interfaces;
 using OasisApi.Application.Interfaces.Repositories;
 using OasisApi.Domain.Entities;
+using OasisApi.Domain.Enums;
 
 namespace OasisApi.Application.Services
 {
@@ -29,7 +30,7 @@ namespace OasisApi.Application.Services
             }
 
             var token = _tokenService.GenerateToken(user);
-            return new AuthResponseDto { Authenticated = true, Token = token };
+            return new AuthResponseDto { Authenticated = true, Token = token, Role = user.Tipo.ToString() };
         }
 
         public async Task RegisterAsync(RegisterRequestDto dto)
@@ -39,11 +40,13 @@ namespace OasisApi.Application.Services
                 throw new BadRequestException("Usuário já existe.");
             }
 
+            // O sistema hoje só tem um tipo de conta: assistentes sociais são quem opera o sistema.
             var user = new User
             {
                 Email = dto.Email,
                 Username = dto.Email,
-                PasswordHash = _passwordHasher.HashPassword(dto.Password)
+                PasswordHash = _passwordHasher.HashPassword(dto.Password),
+                Tipo = TipoUsuario.AssistenteSocial
             };
 
             await _userRepository.AddAsync(user);

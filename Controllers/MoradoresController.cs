@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OasisApi.Application.Dtos.Moradores;
 using OasisApi.Application.Services;
+using OasisApi.Domain.Enums;
 
 namespace OasisApi.Controllers
 {
@@ -32,7 +33,7 @@ namespace OasisApi.Controllers
 
         // POST: api/moradores
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<ActionResult<MoradorResponseDto>> InserirNovoMorador([FromBody] MoradorCreateDto dto)
         {
             var morador = await _moradorService.CreateAsync(dto);
@@ -41,7 +42,7 @@ namespace OasisApi.Controllers
 
         // PUT: api/moradores/{id}
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<ActionResult<MoradorResponseDto>> AtualizarMoradorbyId(Guid id, MoradorUpdateDto dto)
         {
             return Ok(await _moradorService.UpdateAsync(id, dto));
@@ -49,7 +50,7 @@ namespace OasisApi.Controllers
 
         // DELETE: api/moradores/{id}
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<IActionResult> DeleteMorador(Guid id)
         {
             await _moradorService.DeleteAsync(id);

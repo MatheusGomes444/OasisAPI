@@ -1,3 +1,5 @@
+using OasisApi.Domain.Enums;
+
 namespace OasisApi.Domain.Entities;
 
 public class User
@@ -7,4 +9,5 @@ public class User
     public string Username { get; set; }
     public string Email { get; set; }
     public string PasswordHash { get; set; } // Armazenar o hash da senha
+    public TipoUsuario Tipo { get; set; } = TipoUsuario.AssistenteSocial;
 }

@@ -22,7 +22,7 @@ namespace OasisApi.Infrastructure.Security
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.Role, user.Tipo.ToString()),
             };
 
             var jwtSettings = _configuration.GetSection("JwtSettings");

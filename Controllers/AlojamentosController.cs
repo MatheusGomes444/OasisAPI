@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OasisApi.Application.Dtos.Alojamentos;
 using OasisApi.Application.Dtos.Moradores;
 using OasisApi.Application.Services;
+using OasisApi.Domain.Enums;
 
 namespace OasisApi.Controllers
 {
@@ -33,7 +34,7 @@ namespace OasisApi.Controllers
 
         // POST: api/Alojamentos
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<ActionResult<AlojamentoResponseDto>> InserirNovoAlojamento([FromBody] AlojamentoCreateDto dto)
         {
             var alojamento = await _alojamentoService.CreateAsync(dto);
@@ -42,7 +43,7 @@ namespace OasisApi.Controllers
 
         // PUT: api/alojamentos/Atualizar
         [HttpPut("Atualizar")]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<ActionResult<AlojamentoResponseDto>> AtualizarAlojamento(Guid id, AlojamentoUpdateDto dto)
         {
             return Ok(await _alojamentoService.UpdateAsync(id, dto));
@@ -50,7 +51,7 @@ namespace OasisApi.Controllers
 
         // DELETE: api/alojamentos/DeletarAlojamentobyId
         [HttpDelete("DeletarAlojamentobyId")]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<IActionResult> DeleteAlojamento(Guid id)
         {
             await _alojamentoService.DeleteAsync(id);
@@ -58,7 +59,7 @@ namespace OasisApi.Controllers
         }
 
         [HttpPost("{alojamentoId}/adicionar-morador")]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<ActionResult<MoradorResponseDto>> AdicionarMoradorAoAlojamento(Guid alojamentoId, [FromBody] MoradorCreateDto dto)
         {
             return Ok(await _alojamentoService.AdicionarMoradorAsync(alojamentoId, dto));
@@ -72,7 +73,7 @@ namespace OasisApi.Controllers
         }
 
         [HttpPost("{alojamentoId}/mudarmorador")]
-        [Authorize]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
         public async Task<IActionResult> MudarAlojamentoOuFilaDeEspera([FromBody] MudancaAlojamentoRequestDto dto)
         {
             var message = await _alojamentoService.MudarAlojamentoOuFilaDeEsperaAsync(dto);
