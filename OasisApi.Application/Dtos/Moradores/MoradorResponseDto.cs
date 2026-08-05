@@ -15,5 +15,9 @@ namespace OasisApi.Application.Dtos.Moradores
         public bool Ativo { get; set; }
         public Guid AlojamentoId { get; set; }
         public string? AlojamentoNome { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string? CreatedByEmail { get; set; }
+        public string? UpdatedByEmail { get; set; }
     }
 }

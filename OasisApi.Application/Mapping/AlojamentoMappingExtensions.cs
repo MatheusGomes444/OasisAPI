@@ -19,7 +19,11 @@ namespace OasisApi.Application.Mapping
                 Sexo = alojamento.Sexo,
                 Pertences = alojamento.Pertences,
                 Refeicoes = alojamento.Refeicoes,
-                Moradores = alojamento.Moradores.Select(m => m.ToResponseDto()).ToList()
+                Moradores = alojamento.Moradores.Select(m => m.ToResponseDto()).ToList(),
+                CreatedAt = alojamento.CreatedAt,
+                UpdatedAt = alojamento.UpdatedAt,
+                CreatedByEmail = alojamento.CreatedByUser?.Email,
+                UpdatedByEmail = alojamento.UpdatedByUser?.Email
             };
         }
 

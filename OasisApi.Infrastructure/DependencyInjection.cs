@@ -29,6 +29,9 @@ namespace OasisApi.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPasswordHasher, PasswordHasherAdapter>();
 
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
             var jwtSettings = configuration.GetSection("JwtSettings");
             services.AddAuthentication(options =>
             {

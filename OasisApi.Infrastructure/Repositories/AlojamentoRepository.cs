@@ -21,7 +21,11 @@ namespace OasisApi.Infrastructure.Repositories
             _context.Alojamentos.FirstOrDefaultAsync(a => a.Uuid == uuid);
 
         public Task<Alojamento?> GetByUuidWithMoradoresAsync(Guid uuid) =>
-            _context.Alojamentos.Include(a => a.Moradores).FirstOrDefaultAsync(a => a.Uuid == uuid);
+            _context.Alojamentos
+                .Include(a => a.Moradores)
+                .Include(a => a.CreatedByUser)
+                .Include(a => a.UpdatedByUser)
+                .FirstOrDefaultAsync(a => a.Uuid == uuid);
 
         public async Task AddAsync(Alojamento alojamento)
         {

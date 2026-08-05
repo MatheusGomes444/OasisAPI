@@ -15,5 +15,9 @@ namespace OasisApi.Application.Dtos.Alojamentos
         public string Pertences { get; set; } = string.Empty;
         public string Refeicoes { get; set; } = string.Empty;
         public List<MoradorResponseDto> Moradores { get; set; } = new();
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string? CreatedByEmail { get; set; }
+        public string? UpdatedByEmail { get; set; }
     }
 }

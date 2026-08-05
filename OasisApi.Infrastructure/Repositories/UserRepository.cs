@@ -17,6 +17,9 @@ namespace OasisApi.Infrastructure.Repositories
         public Task<User?> GetByEmailAsync(string email) =>
             _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
+        public Task<User?> GetByUuidAsync(Guid uuid) =>
+            _context.Users.FirstOrDefaultAsync(u => u.Uuid == uuid);
+
         public Task<bool> ExistsByEmailAsync(string email) =>
             _context.Users.AnyAsync(u => u.Email == email);
 

@@ -12,12 +12,21 @@ namespace OasisApi.Application.Services
     {
         private readonly IAlojamentoRepository _alojamentoRepository;
         private readonly IMoradorRepository _moradorRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AlojamentoService(IAlojamentoRepository alojamentoRepository, IMoradorRepository moradorRepository, IUnitOfWork unitOfWork)
+        public AlojamentoService(
+            IAlojamentoRepository alojamentoRepository,
+            IMoradorRepository moradorRepository,
+            IUserRepository userRepository,
+            ICurrentUserService currentUserService,
+            IUnitOfWork unitOfWork)
         {
             _alojamentoRepository = alojamentoRepository;
             _moradorRepository = moradorRepository;
+            _userRepository = userRepository;
+            _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
         }
 
@@ -37,17 +46,29 @@ namespace OasisApi.Application.Services
 
         public async Task<AlojamentoResponseDto> CreateAsync(AlojamentoCreateDto dto)
         {
+            var currentUser = await GetCurrentUserAsync();
+
             var alojamento = dto.ToEntity();
+            alojamento.CreatedAt = DateTime.UtcNow;
+            alojamento.CreatedByUserId = currentUser?.Id;
+            alojamento.CreatedByUser = currentUser;
+
             await _alojamentoRepository.AddAsync(alojamento);
             return alojamento.ToResponseDto();
         }
 
         public async Task<AlojamentoResponseDto> UpdateAsync(Guid id, AlojamentoUpdateDto dto)
         {
-            var alojamento = await _alojamentoRepository.GetByUuidAsync(id)
+            var alojamento = await _alojamentoRepository.GetByUuidWithMoradoresAsync(id)
                 ?? throw new NotFoundException($"Alojamento com ID {id} não encontrado.");
 
+            var currentUser = await GetCurrentUserAsync();
+
             dto.ApplyTo(alojamento);
+            alojamento.UpdatedAt = DateTime.UtcNow;
+            alojamento.UpdatedByUserId = currentUser?.Id;
+            alojamento.UpdatedByUser = currentUser;
+
             await _alojamentoRepository.UpdateAsync(alojamento);
             return alojamento.ToResponseDto();
         }
@@ -75,9 +96,14 @@ namespace OasisApi.Application.Services
                 throw new BadRequestException("Apenas moradores ativos podem ser alocados.");
             }
 
+            var currentUser = await GetCurrentUserAsync();
+
             var morador = dto.ToEntity();
             morador.AlojamentoId = alojamento.Id;
             morador.Alojamento = alojamento;
+            morador.CreatedAt = DateTime.UtcNow;
+            morador.CreatedByUserId = currentUser?.Id;
+            morador.CreatedByUser = currentUser;
             await _moradorRepository.AddAsync(morador);
 
             return morador.ToResponseDto();
@@ -117,8 +143,13 @@ namespace OasisApi.Application.Services
                 }
                 else
                 {
+                    var currentUser = await GetCurrentUserAsync();
+
                     morador.AlojamentoId = novoAlojamento.Id;
                     morador.Alojamento = novoAlojamento;
+                    morador.UpdatedAt = DateTime.UtcNow;
+                    morador.UpdatedByUserId = currentUser?.Id;
+                    morador.UpdatedByUser = currentUser;
                     await _moradorRepository.UpdateAsync(morador);
                     message = "Morador movido para o novo alojamento com sucesso.";
                 }
@@ -140,6 +171,12 @@ namespace OasisApi.Application.Services
 
             var filaDeEspera = await _alojamentoRepository.GetFilaDeEsperaAsync(alojamento.Id);
             return filaDeEspera.Select(f => f.ToResponseDto()).ToList();
+        }
+
+        private async Task<User?> GetCurrentUserAsync()
+        {
+            var uuid = _currentUserService.UserUuid;
+            return uuid.HasValue ? await _userRepository.GetByUuidAsync(uuid.Value) : null;
         }
     }
 }

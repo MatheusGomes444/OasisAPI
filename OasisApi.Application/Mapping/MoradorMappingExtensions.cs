@@ -21,7 +21,11 @@ namespace OasisApi.Application.Mapping
                 Observacoes = morador.Observacoes,
                 Ativo = morador.Ativo,
                 AlojamentoId = morador.Alojamento?.Uuid ?? Guid.Empty,
-                AlojamentoNome = morador.Alojamento?.Nome
+                AlojamentoNome = morador.Alojamento?.Nome,
+                CreatedAt = morador.CreatedAt,
+                UpdatedAt = morador.UpdatedAt,
+                CreatedByEmail = morador.CreatedByUser?.Email,
+                UpdatedByEmail = morador.UpdatedByUser?.Email
             };
         }
 

@@ -49,6 +49,32 @@ namespace OasisApi.Infrastructure.Persistence
                 .WithMany(a => a.Moradores)
                 .HasForeignKey(m => m.AlojamentoId);
 
+            // Trilha de auditoria de Morador (quem criou/atualizou)
+            modelBuilder.Entity<Morador>()
+                .HasOne(m => m.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(m => m.CreatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Morador>()
+                .HasOne(m => m.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(m => m.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Trilha de auditoria de Alojamento (quem criou/atualizou)
+            modelBuilder.Entity<Alojamento>()
+                .HasOne(a => a.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.CreatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Alojamento>()
+                .HasOne(a => a.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Configuração de FilaDeEspera
             modelBuilder.Entity<FilaDeEspera>().ToTable("FilasDeEspera");
             modelBuilder.Entity<FilaDeEspera>().HasKey(f => f.Id);
@@ -69,6 +95,8 @@ namespace OasisApi.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.NoAction); // Evita exclusão em cascata
 
             // Dados iniciais para Alojamentos
+            var seedCreatedAt = new DateTime(2024, 12, 5, 0, 0, 0, DateTimeKind.Utc);
+
             modelBuilder.Entity<Alojamento>().HasData(
                 new Alojamento
                 {
@@ -83,6 +111,7 @@ namespace OasisApi.Infrastructure.Persistence
                     Sexo = "Masculino",
                     Pertences = "Roupas e sapatos",
                     Refeicoes = "Café e janta",
+                    CreatedAt = seedCreatedAt
                 }
             );
 
@@ -102,7 +131,8 @@ namespace OasisApi.Infrastructure.Persistence
                     Nacionalidade = "Brasileiro",
                     Observacoes = "Sem observações",
                     AlojamentoId = 1,
-                    Ativo = true
+                    Ativo = true,
+                    CreatedAt = seedCreatedAt
                 }
             );
         }

@@ -20,4 +20,16 @@ public class Morador
 
     [System.Text.Json.Serialization.JsonIgnore]
     public Alojamento? Alojamento { get; set; }
+
+    // Trilha de auditoria
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+    public int? CreatedByUserId { get; set; }
+    public int? UpdatedByUserId { get; set; }
+
+    [System.Text.Json.Serialization.JsonIgnore]
+    public User? CreatedByUser { get; set; }
+
+    [System.Text.Json.Serialization.JsonIgnore]
+    public User? UpdatedByUser { get; set; }
 }
