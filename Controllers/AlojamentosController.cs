@@ -1,278 +1,90 @@
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using OasisApi.Models;
-using OasisApi.Data;
-using Microsoft.EntityFrameworkCore; // Adicione esta linha
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OasisApi.Application.Dtos.Alojamentos;
+using OasisApi.Application.Dtos.Common;
+using OasisApi.Application.Dtos.Moradores;
+using OasisApi.Application.Services;
+using OasisApi.Domain.Enums;
 
 namespace OasisApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     public class AlojamentosController : ControllerBase
-        {
-        private readonly DataContext _context;
-
-        public AlojamentosController(DataContext context)
-        {
-            _context = context;
-        }
-     
-// GET: api/alojamentos/{id}
-[HttpGet("{id}")]
-public async Task<ActionResult<Alojamento>> GetAlojamentoById(int id)
-{
-    // Busca o alojamento pelo ID, incluindo a lista de moradores
-    var alojamento = await _context.Alojamentos
-                                    .Include(a => a.Moradores) // Inclui os moradores
-                                    .FirstOrDefaultAsync(a => a.Id == id);
-
-    if (alojamento == null)
     {
-        return NotFound($"Alojamento com ID {id} não encontrado.");
-    }
+        private readonly IAlojamentoService _alojamentoService;
 
-    return Ok(alojamento); // Retorna o alojamento encontrado
-}
+        public AlojamentosController(IAlojamentoService alojamentoService)
+        {
+            _alojamentoService = alojamentoService;
+        }
 
+        // GET: api/alojamentos?nome=&page=&pageSize=
+        [HttpGet]
+        public async Task<ActionResult<PagedResultDto<AlojamentoListItemDto>>> GetAlojamentos([FromQuery] AlojamentoQueryDto query)
+        {
+            return Ok(await _alojamentoService.GetAllAsync(query));
+        }
 
+        // GET: api/alojamentos/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AlojamentoResponseDto>> GetAlojamentoById(Guid id)
+        {
+            return Ok(await _alojamentoService.GetByIdAsync(id));
+        }
 
         // POST: api/Alojamentos
-  [HttpPost]
-  [Authorize]
-public async Task<IActionResult> InserirNovoAlojamento([FromBody] Alojamento alojamento)
-{
-    if (alojamento == null)
-    {
-        return BadRequest("Os dados do alojamento não podem ser nulos.");
-    }
-
-    try
-    {
-        alojamento.Moradores = new List<Morador>(); // Garante que não há moradores ao criar
-
-        _context.Alojamentos.Add(alojamento);
-        await _context.SaveChangesAsync();
-
-        return Ok(alojamento);
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, $"Erro ao salvar o alojamento: {ex.Message}");
-    }
-}
-
-
-
-
-        // GET: api/alojamentos
-       [HttpGet]
-public async Task<ActionResult<IEnumerable<object>>> GetAlojamentos()
-{
-    var alojamentos = await _context.Alojamentos
-        .Include(a => a.Moradores)
-        .Select(a => new 
+        [HttpPost]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
+        public async Task<ActionResult<AlojamentoResponseDto>> InserirNovoAlojamento([FromBody] AlojamentoCreateDto dto)
         {
-            a.Id,
-            a.Nome,
-            a.CapacidadeMaxima,
-            QuantidadeMoradores = a.Moradores.Count // Conta os moradores associados
-        })
-        .ToListAsync();
-
-    return Ok(alojamentos);
-}
-
+            var alojamento = await _alojamentoService.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetAlojamentoById), new { id = alojamento.Id }, alojamento);
+        }
 
         // PUT: api/alojamentos/Atualizar
         [HttpPut("Atualizar")]
-        [Authorize]
-        public async Task<IActionResult> AtualizarAlojamento(int id, Alojamento alojamentoAtualizado)
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
+        public async Task<ActionResult<AlojamentoResponseDto>> AtualizarAlojamento(Guid id, AlojamentoUpdateDto dto)
         {
-            Alojamento? alojamento = await _context.Alojamentos.FirstOrDefaultAsync(a => a.Id == id);
-
-            if (alojamento == null)
-            {
-                return NotFound();
-            }
-
-            // Atualização dos campos
-            alojamento.Nome = alojamentoAtualizado.Nome;
-            alojamento.Equipe = alojamentoAtualizado.Equipe;
-            alojamento.Telefone = alojamentoAtualizado.Telefone;
-            alojamento.Email = alojamentoAtualizado.Email;
-            alojamento.CapacidadeMaxima = alojamentoAtualizado.CapacidadeMaxima;
-            alojamento.Pet = alojamentoAtualizado.Pet;
-            alojamento.Sexo = alojamentoAtualizado.Sexo;
-            alojamento.Pertences = alojamentoAtualizado.Pertences;
-            alojamento.Refeicoes = alojamentoAtualizado.Refeicoes;
-            await _context.SaveChangesAsync();
-
-            return Ok(alojamento);
+            return Ok(await _alojamentoService.UpdateAsync(id, dto));
         }
 
         // DELETE: api/alojamentos/DeletarAlojamentobyId
         [HttpDelete("DeletarAlojamentobyId")]
-        [Authorize]
-        public async Task<IActionResult> DeleteAlojamento(int id)
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
+        public async Task<IActionResult> DeleteAlojamento(Guid id)
         {
-            Alojamento? alojamento = await _context.Alojamentos.FirstOrDefaultAsync(a => a.Id == id);
-
-            if (alojamento == null)
-            {
-                return NotFound();
-            }
-
-            _context.Alojamentos.Remove(alojamento);
-            await _context.SaveChangesAsync();
-
+            await _alojamentoService.DeleteAsync(id);
             return Ok();
         }
-    
-    
 
-   [HttpPost("{alojamentoId}/adicionar-morador")]
-   [Authorize]
-public async Task<IActionResult> AdicionarMoradorAoAlojamento(int alojamentoId, [FromBody] Morador morador)
-{
-    // Verifica se o alojamento existe
-    var alojamento = await _context.Alojamentos.Include(a => a.Moradores).FirstOrDefaultAsync(a => a.Id == alojamentoId);
-    if (alojamento == null)
-    {
-        return NotFound($"Alojamento com ID {alojamentoId} não encontrado.");
-    }
-
-    // Verifica se o alojamento atingiu a capacidade máxima
-    if (alojamento.Moradores.Count >= alojamento.CapacidadeMaxima)
-    {
-        return BadRequest($"Alojamento com ID {alojamentoId} já atingiu sua capacidade máxima.");
-    }
-
-    // Verifica se o morador está ativo
-    if (!morador.Ativo)
-    {
-        return BadRequest("Apenas moradores ativos podem ser alocados.");
-    }
-
-    // Remove referência circular do Alojamento
-    morador.Alojamento = null;
-
-    // Associa o morador ao alojamento
-    morador.AlojamentoId = alojamentoId;
-    _context.Moradores.Add(morador);
-    await _context.SaveChangesAsync();
-
-    return Ok(morador);
-}
-
-
-    // Listar moradores de um alojamento
-    [HttpGet("{alojamentoId}/filtro")]
-    public async Task<ActionResult<IEnumerable<Morador>>> ListarMoradoresDoAlojamento(int alojamentoId)
-    {
-        // Verifica se o alojamento existe
-        var alojamento = await _context.Alojamentos.Include(a => a.Moradores).FirstOrDefaultAsync(a => a.Id == alojamentoId);
-        if (alojamento == null)
+        [HttpPost("{alojamentoId}/adicionar-morador")]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
+        public async Task<ActionResult<MoradorResponseDto>> AdicionarMoradorAoAlojamento(Guid alojamentoId, [FromBody] MoradorCreateDto dto)
         {
-            return NotFound($"Alojamento com ID {alojamentoId} não encontrado.");
+            return Ok(await _alojamentoService.AdicionarMoradorAsync(alojamentoId, dto));
         }
 
-        // Retorna a lista de moradores do alojamento
-        return Ok(alojamento.Moradores);
-    }
-   [HttpPost("{alojamentoId}/mudarmorador")]
-   [Authorize]
-public async Task<IActionResult> MudarAlojamentoOuFilaDeEspera([FromBody] MudancaAlojamentoRequest request)
-{
-    // Iniciar uma transação para garantir que todas as alterações sejam atômicas
-    using var transaction = await _context.Database.BeginTransactionAsync();
-
-    try
-    {
-        // Buscar o morador com o alojamento associado
-        var morador = await _context.Moradores.Include(m => m.Alojamento)
-                                               .FirstOrDefaultAsync(m => m.Id == request.MoradorId);
-
-        if (morador == null)
+        // Listar moradores de um alojamento
+        [HttpGet("{alojamentoId}/filtro")]
+        public async Task<ActionResult<List<MoradorResponseDto>>> ListarMoradoresDoAlojamento(Guid alojamentoId)
         {
-            return NotFound(new { Message = "Morador não encontrado." });
+            return Ok(await _alojamentoService.ListarMoradoresAsync(alojamentoId));
         }
 
-        // Buscar o novo alojamento
-        var novoAlojamento = await _context.Alojamentos
-                                            .FirstOrDefaultAsync(a => a.Id == request.NovoAlojamentoId);
-
-        if (novoAlojamento == null)
+        [HttpPost("{alojamentoId}/mudarmorador")]
+        [Authorize(Roles = nameof(TipoUsuario.AssistenteSocial))]
+        public async Task<IActionResult> MudarAlojamentoOuFilaDeEspera([FromBody] MudancaAlojamentoRequestDto dto)
         {
-            return NotFound(new { Message = "Alojamento não encontrado." });
+            var message = await _alojamentoService.MudarAlojamentoOuFilaDeEsperaAsync(dto);
+            return Ok(new { Message = message });
         }
 
-        // Verificar se o alojamento tem capacidade
-        var moradoresNoAlojamento = await _context.Moradores
-                                                  .CountAsync(m => m.AlojamentoId == request.NovoAlojamentoId);
-
-        if (moradoresNoAlojamento >= novoAlojamento.CapacidadeMaxima)
+        [HttpGet("{alojamentoId}/fila-de-espera")]
+        public async Task<ActionResult<List<FilaDeEsperaResponseDto>>> ListarFilaDeEspera(Guid alojamentoId)
         {
-            // Se o alojamento não tem capacidade, colocar na fila de espera
-            var filaDeEspera = new FilaDeEspera
-            {
-                MoradorId = request.MoradorId,
-                AlojamentoId = request.NovoAlojamentoId
-            };
-
-            // Adicionar o morador à fila de espera
-            await _context.FilasDeEspera.AddAsync(filaDeEspera);
-            await _context.SaveChangesAsync();
-
-            // Commitar a transação
-            await transaction.CommitAsync();
-
-            return Ok(new { Message = "Morador colocado na fila de espera, pois o alojamento está cheio." });
-        }
-        else
-        {
-            // Se o alojamento tem capacidade, mover o morador para o novo alojamento
-            morador.AlojamentoId = request.NovoAlojamentoId;
-
-            // Atualizar o morador
-            _context.Moradores.Update(morador);
-            await _context.SaveChangesAsync();
-
-            // Commitar a transação
-            await transaction.CommitAsync();
-
-            return Ok(new { Message = "Morador movido para o novo alojamento com sucesso." });
+            return Ok(await _alojamentoService.ListarFilaDeEsperaAsync(alojamentoId));
         }
     }
-    catch (Exception ex)
-    {
-        // Se ocorrer algum erro, fazer rollback da transação
-        await transaction.RollbackAsync();
-        return StatusCode(500, new { Message = "Erro ao mover o morador: " + ex.Message });
-    }
 }
-
-
-[HttpGet("{alojamentoId}/fila-de-espera")]
-public async Task<IActionResult> ListarFilaDeEspera(int alojamentoId)
-{
-    var filaDeEspera = await _context.FilasDeEspera
-        .Where(f => f.AlojamentoId == alojamentoId)
-        .OrderBy(f => f.DataEntrada)
-        .Include(f => f.Morador) // Inclui informações do morador, se necessário
-        .ToListAsync();
-
-    if (!filaDeEspera.Any())
-    {
-        return Ok($"Nenhum morador está na fila de espera para o alojamento com ID {alojamentoId}.");
-    }
-
-    return Ok(filaDeEspera);
-}
-
-
-}
-}
- 

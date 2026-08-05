@@ -1,0 +1,23 @@
+namespace OasisApi.Application.Dtos.Moradores
+{
+    public class MoradorResponseDto
+    {
+        public Guid Id { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string CPF { get; set; } = string.Empty;
+        public string RG { get; set; } = string.Empty;
+        public int Telefone { get; set; }
+        public string Endereco { get; set; } = string.Empty;
+        public int Idade { get; set; }
+        public int Datanascimento { get; set; }
+        public string Nacionalidade { get; set; } = string.Empty;
+        public string Observacoes { get; set; } = string.Empty;
+        public bool Ativo { get; set; }
+        public Guid AlojamentoId { get; set; }
+        public string? AlojamentoNome { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string? CreatedByEmail { get; set; }
+        public string? UpdatedByEmail { get; set; }
+    }
+}
