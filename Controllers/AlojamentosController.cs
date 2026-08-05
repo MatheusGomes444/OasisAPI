@@ -5,6 +5,7 @@ using OasisApi.Models;
 using OasisApi.Data;
 using Microsoft.EntityFrameworkCore; // Adicione esta linha
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OasisApi.Controllers
 {
@@ -40,6 +41,7 @@ public async Task<ActionResult<Alojamento>> GetAlojamentoById(int id)
 
         // POST: api/Alojamentos
   [HttpPost]
+  [Authorize]
 public async Task<IActionResult> InserirNovoAlojamento([FromBody] Alojamento alojamento)
 {
     if (alojamento == null)
@@ -86,6 +88,7 @@ public async Task<ActionResult<IEnumerable<object>>> GetAlojamentos()
 
         // PUT: api/alojamentos/Atualizar
         [HttpPut("Atualizar")]
+        [Authorize]
         public async Task<IActionResult> AtualizarAlojamento(int id, Alojamento alojamentoAtualizado)
         {
             Alojamento? alojamento = await _context.Alojamentos.FirstOrDefaultAsync(a => a.Id == id);
@@ -100,11 +103,11 @@ public async Task<ActionResult<IEnumerable<object>>> GetAlojamentos()
             alojamento.Equipe = alojamentoAtualizado.Equipe;
             alojamento.Telefone = alojamentoAtualizado.Telefone;
             alojamento.Email = alojamentoAtualizado.Email;
-            alojamento.CapacidadeMaxima = alojamento.CapacidadeMaxima;
-            alojamento.Pet = alojamento.Pet;
-            alojamento.Sexo = alojamento.Sexo;
-            alojamento.Pertences = alojamento.Pertences;
-            alojamento.Refeicoes = alojamento.Refeicoes;
+            alojamento.CapacidadeMaxima = alojamentoAtualizado.CapacidadeMaxima;
+            alojamento.Pet = alojamentoAtualizado.Pet;
+            alojamento.Sexo = alojamentoAtualizado.Sexo;
+            alojamento.Pertences = alojamentoAtualizado.Pertences;
+            alojamento.Refeicoes = alojamentoAtualizado.Refeicoes;
             await _context.SaveChangesAsync();
 
             return Ok(alojamento);
@@ -112,6 +115,7 @@ public async Task<ActionResult<IEnumerable<object>>> GetAlojamentos()
 
         // DELETE: api/alojamentos/DeletarAlojamentobyId
         [HttpDelete("DeletarAlojamentobyId")]
+        [Authorize]
         public async Task<IActionResult> DeleteAlojamento(int id)
         {
             Alojamento? alojamento = await _context.Alojamentos.FirstOrDefaultAsync(a => a.Id == id);
@@ -130,6 +134,7 @@ public async Task<ActionResult<IEnumerable<object>>> GetAlojamentos()
     
 
    [HttpPost("{alojamentoId}/adicionar-morador")]
+   [Authorize]
 public async Task<IActionResult> AdicionarMoradorAoAlojamento(int alojamentoId, [FromBody] Morador morador)
 {
     // Verifica se o alojamento existe
@@ -178,6 +183,7 @@ public async Task<IActionResult> AdicionarMoradorAoAlojamento(int alojamentoId, 
         return Ok(alojamento.Moradores);
     }
    [HttpPost("{alojamentoId}/mudarmorador")]
+   [Authorize]
 public async Task<IActionResult> MudarAlojamentoOuFilaDeEspera([FromBody] MudancaAlojamentoRequest request)
 {
     // Iniciar uma transação para garantir que todas as alterações sejam atômicas

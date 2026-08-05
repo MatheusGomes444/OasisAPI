@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OasisApi.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OasisApi.Controllers
 {
@@ -44,6 +45,7 @@ namespace OasisApi.Controllers
        
         // POST: api/moradores
         [HttpPost]
+        [Authorize]
 public async Task<ActionResult> InserirNovoMorador([FromBody] Morador morador)
 {
     // Verifique se o objeto recebido não é nulo
@@ -71,6 +73,7 @@ public async Task<ActionResult> InserirNovoMorador([FromBody] Morador morador)
 
         // PUT: api/moradores/{id}
       [HttpPut("{id}")]
+      [Authorize]
 public async Task<IActionResult> AtualizarMoradorbyId(int id, Morador moradorAtualizado)
 {
     if (moradorAtualizado == null)
@@ -107,7 +110,8 @@ public async Task<IActionResult> AtualizarMoradorbyId(int id, Morador moradorAtu
 
 
         // DELETE: api/moradores/{id}
-        [HttpDelete("{Deletar Morador}")]
+        [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteMorador(int id)
         {
             Morador? morador = _context.Moradores.FirstOrDefault(m => m.Id == id);
