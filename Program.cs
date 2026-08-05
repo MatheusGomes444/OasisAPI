@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using OasisApi.Common.Middleware;
+using OasisApi.Repositories;
+using OasisApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,8 +53,19 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<IMoradorRepository, MoradorRepository>();
+builder.Services.AddScoped<IAlojamentoRepository, AlojamentoRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IMoradorService, MoradorService>();
+builder.Services.AddScoped<IAlojamentoService, AlojamentoService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 // ...
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configura o pipeline de solicitação HTTP
 if (app.Environment.IsDevelopment())
