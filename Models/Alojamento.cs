@@ -2,7 +2,7 @@ namespace OasisApi.Models
 {
     public class Alojamento
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Nome { get; set; } = string.Empty;
          public string Equipe { get; set; } = string.Empty;
         public int Telefone { get; set; }

@@ -1,7 +1,7 @@
 using OasisApi.Models;
 public class Morador
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Nome { get; set; } = string.Empty;
     public string CPF { get; set; } = string.Empty;
     public string RG { get; set; } = string.Empty;
@@ -14,7 +14,7 @@ public class Morador
     public bool Ativo { get; set; }
 
     // Relacionamento com Alojamento
-    public int AlojamentoId { get; set; }
+    public Guid AlojamentoId { get; set; }
 
     [System.Text.Json.Serialization.JsonIgnore]
     public Alojamento? Alojamento { get; set; }

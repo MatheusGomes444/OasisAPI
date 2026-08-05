@@ -5,10 +5,10 @@ namespace OasisApi.Repositories
     public interface IMoradorRepository
     {
         Task<List<Morador>> GetAllAsync();
-        Task<Morador?> GetByIdAsync(int id);
-        Task<Morador?> GetByIdWithAlojamentoAsync(int id);
-        Task<List<Morador>> GetByAlojamentoIdAsync(int alojamentoId);
-        Task<int> CountByAlojamentoIdAsync(int alojamentoId);
+        Task<Morador?> GetByIdAsync(Guid id);
+        Task<Morador?> GetByIdWithAlojamentoAsync(Guid id);
+        Task<List<Morador>> GetByAlojamentoIdAsync(Guid alojamentoId);
+        Task<int> CountByAlojamentoIdAsync(Guid alojamentoId);
         Task AddAsync(Morador morador);
         Task UpdateAsync(Morador morador);
         Task DeleteAsync(Morador morador);

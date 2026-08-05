@@ -1,9 +1,9 @@
 namespace OasisApi.Models;
 public class FilaDeEspera
 {
-    public int Id { get; set; }
-    public int MoradorId { get; set; }
-    public int AlojamentoId { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid MoradorId { get; set; }
+    public Guid AlojamentoId { get; set; }
     public DateTime DataEntrada { get; set; }
 
     // Relacionamentos

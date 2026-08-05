@@ -16,10 +16,10 @@ namespace OasisApi.Repositories
         public Task<List<Alojamento>> GetAllWithMoradoresAsync() =>
             _context.Alojamentos.Include(a => a.Moradores).ToListAsync();
 
-        public Task<Alojamento?> GetByIdAsync(int id) =>
+        public Task<Alojamento?> GetByIdAsync(Guid id) =>
             _context.Alojamentos.FirstOrDefaultAsync(a => a.Id == id);
 
-        public Task<Alojamento?> GetByIdWithMoradoresAsync(int id) =>
+        public Task<Alojamento?> GetByIdWithMoradoresAsync(Guid id) =>
             _context.Alojamentos.Include(a => a.Moradores).FirstOrDefaultAsync(a => a.Id == id);
 
         public async Task AddAsync(Alojamento alojamento)
@@ -46,7 +46,7 @@ namespace OasisApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<List<FilaDeEspera>> GetFilaDeEsperaAsync(int alojamentoId) =>
+        public Task<List<FilaDeEspera>> GetFilaDeEsperaAsync(Guid alojamentoId) =>
             _context.FilasDeEspera
                 .Where(f => f.AlojamentoId == alojamentoId)
                 .OrderBy(f => f.DataEntrada)

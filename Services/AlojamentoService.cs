@@ -30,7 +30,7 @@ namespace OasisApi.Services
             return alojamentos.Select(a => a.ToListItemDto()).ToList();
         }
 
-        public async Task<AlojamentoResponseDto> GetByIdAsync(int id)
+        public async Task<AlojamentoResponseDto> GetByIdAsync(Guid id)
         {
             var alojamento = await _alojamentoRepository.GetByIdWithMoradoresAsync(id)
                 ?? throw new NotFoundException($"Alojamento com ID {id} não encontrado.");
@@ -45,7 +45,7 @@ namespace OasisApi.Services
             return alojamento.ToResponseDto();
         }
 
-        public async Task<AlojamentoResponseDto> UpdateAsync(int id, AlojamentoUpdateDto dto)
+        public async Task<AlojamentoResponseDto> UpdateAsync(Guid id, AlojamentoUpdateDto dto)
         {
             var alojamento = await _alojamentoRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException($"Alojamento com ID {id} não encontrado.");
@@ -55,7 +55,7 @@ namespace OasisApi.Services
             return alojamento.ToResponseDto();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var alojamento = await _alojamentoRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException($"Alojamento com ID {id} não encontrado.");
@@ -63,7 +63,7 @@ namespace OasisApi.Services
             await _alojamentoRepository.DeleteAsync(alojamento);
         }
 
-        public async Task<MoradorResponseDto> AdicionarMoradorAsync(int alojamentoId, MoradorCreateDto dto)
+        public async Task<MoradorResponseDto> AdicionarMoradorAsync(Guid alojamentoId, MoradorCreateDto dto)
         {
             var alojamento = await _alojamentoRepository.GetByIdWithMoradoresAsync(alojamentoId)
                 ?? throw new NotFoundException($"Alojamento com ID {alojamentoId} não encontrado.");
@@ -85,7 +85,7 @@ namespace OasisApi.Services
             return morador.ToResponseDto();
         }
 
-        public async Task<List<MoradorResponseDto>> ListarMoradoresAsync(int alojamentoId)
+        public async Task<List<MoradorResponseDto>> ListarMoradoresAsync(Guid alojamentoId)
         {
             var alojamento = await _alojamentoRepository.GetByIdWithMoradoresAsync(alojamentoId)
                 ?? throw new NotFoundException($"Alojamento com ID {alojamentoId} não encontrado.");
@@ -134,7 +134,7 @@ namespace OasisApi.Services
             }
         }
 
-        public async Task<List<FilaDeEsperaResponseDto>> ListarFilaDeEsperaAsync(int alojamentoId)
+        public async Task<List<FilaDeEsperaResponseDto>> ListarFilaDeEsperaAsync(Guid alojamentoId)
         {
             var filaDeEspera = await _alojamentoRepository.GetFilaDeEsperaAsync(alojamentoId);
             return filaDeEspera.Select(f => f.ToResponseDto()).ToList();

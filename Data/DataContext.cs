@@ -64,10 +64,12 @@ namespace OasisApi.Data
                 .OnDelete(DeleteBehavior.NoAction); // Evita exclusão em cascata
 
             // Dados iniciais para Alojamentos
+            var alojamentoSeedId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+
             modelBuilder.Entity<Alojamento>().HasData(
                 new Alojamento
                 {
-                    Id = 1,
+                    Id = alojamentoSeedId,
                     Nome = "Albergue Vila Maria",
                     Equipe = "Equipe A",
                     Telefone = 123456789,
@@ -84,7 +86,7 @@ namespace OasisApi.Data
             modelBuilder.Entity<Morador>().HasData(
                 new Morador
                 {
-                    Id = 1,
+                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                     Nome = "Pedro",
                     CPF = "12345678900",
                     RG = "603456789",
@@ -94,7 +96,7 @@ namespace OasisApi.Data
                     Datanascimento = 0,
                     Nacionalidade = "Brasileiro",
                     Observacoes = "Sem observações",
-                    AlojamentoId = 1,
+                    AlojamentoId = alojamentoSeedId,
                     Ativo = true
                 }
             );

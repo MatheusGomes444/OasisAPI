@@ -25,7 +25,7 @@ namespace OasisApi.Controllers
 
         // GET: api/moradores/MoradorbyId/{id}
         [HttpGet("MoradorbyId/{id}")]
-        public async Task<ActionResult<MoradorResponseDto>> GetMoradorbyId(int id)
+        public async Task<ActionResult<MoradorResponseDto>> GetMoradorbyId(Guid id)
         {
             return Ok(await _moradorService.GetByIdAsync(id));
         }
@@ -42,7 +42,7 @@ namespace OasisApi.Controllers
         // PUT: api/moradores/{id}
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<ActionResult<MoradorResponseDto>> AtualizarMoradorbyId(int id, MoradorUpdateDto dto)
+        public async Task<ActionResult<MoradorResponseDto>> AtualizarMoradorbyId(Guid id, MoradorUpdateDto dto)
         {
             return Ok(await _moradorService.UpdateAsync(id, dto));
         }
@@ -50,7 +50,7 @@ namespace OasisApi.Controllers
         // DELETE: api/moradores/{id}
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteMorador(int id)
+        public async Task<IActionResult> DeleteMorador(Guid id)
         {
             await _moradorService.DeleteAsync(id);
             return Ok();

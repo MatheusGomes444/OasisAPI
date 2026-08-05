@@ -12,6 +12,6 @@ namespace OasisApi.Dtos.Moradores
         public string Nacionalidade { get; set; } = string.Empty;
         public string Observacoes { get; set; } = string.Empty;
         public bool Ativo { get; set; }
-        public int AlojamentoId { get; set; }
+        public Guid AlojamentoId { get; set; }
     }
 }

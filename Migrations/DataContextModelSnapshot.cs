@@ -24,14 +24,12 @@ namespace Oasis_API.Migrations
 
             modelBuilder.Entity("Morador", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AlojamentoId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AlojamentoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
@@ -79,8 +77,8 @@ namespace Oasis_API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            AlojamentoId = 1,
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            AlojamentoId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Ativo = true,
                             CPF = "12345678900",
                             Datanascimento = 0,
@@ -96,11 +94,9 @@ namespace Oasis_API.Migrations
 
             modelBuilder.Entity("OasisApi.Models.Alojamento", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("CapacidadeMaxima")
                         .HasColumnType("int");
@@ -141,7 +137,7 @@ namespace Oasis_API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             CapacidadeMaxima = 10,
                             Email = "exemplo1@dominio.com",
                             Equipe = "Equipe A",
@@ -156,20 +152,18 @@ namespace Oasis_API.Migrations
 
             modelBuilder.Entity("OasisApi.Models.FilaDeEspera", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AlojamentoId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AlojamentoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DataEntrada")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MoradorId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("MoradorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -182,11 +176,9 @@ namespace Oasis_API.Migrations
 
             modelBuilder.Entity("User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .IsRequired()

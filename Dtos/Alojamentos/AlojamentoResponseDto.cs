@@ -4,7 +4,7 @@ namespace OasisApi.Dtos.Alojamentos
 {
     public class AlojamentoResponseDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Equipe { get; set; } = string.Empty;
         public int Telefone { get; set; }

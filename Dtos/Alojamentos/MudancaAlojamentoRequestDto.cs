@@ -2,7 +2,7 @@ namespace OasisApi.Dtos.Alojamentos
 {
     public class MudancaAlojamentoRequestDto
     {
-        public int MoradorId { get; set; }
-        public int NovoAlojamentoId { get; set; }
+        public Guid MoradorId { get; set; }
+        public Guid NovoAlojamentoId { get; set; }
     }
 }

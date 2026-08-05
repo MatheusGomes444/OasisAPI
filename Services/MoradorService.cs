@@ -20,7 +20,7 @@ namespace OasisApi.Services
             return moradores.Select(m => m.ToResponseDto()).ToList();
         }
 
-        public async Task<MoradorResponseDto> GetByIdAsync(int id)
+        public async Task<MoradorResponseDto> GetByIdAsync(Guid id)
         {
             var morador = await _moradorRepository.GetByIdWithAlojamentoAsync(id)
                 ?? throw new NotFoundException($"Morador com ID {id} não encontrado.");
@@ -35,7 +35,7 @@ namespace OasisApi.Services
             return morador.ToResponseDto();
         }
 
-        public async Task<MoradorResponseDto> UpdateAsync(int id, MoradorUpdateDto dto)
+        public async Task<MoradorResponseDto> UpdateAsync(Guid id, MoradorUpdateDto dto)
         {
             var morador = await _moradorRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException($"Morador com ID {id} não encontrado.");
@@ -45,7 +45,7 @@ namespace OasisApi.Services
             return morador.ToResponseDto();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var morador = await _moradorRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException($"Morador com ID {id} não encontrado.");
