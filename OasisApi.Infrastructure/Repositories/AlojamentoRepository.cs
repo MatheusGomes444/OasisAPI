@@ -14,8 +14,25 @@ namespace OasisApi.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<List<Alojamento>> GetAllWithMoradoresAsync() =>
-            _context.Alojamentos.Include(a => a.Moradores).ToListAsync();
+        public async Task<(List<Alojamento> Items, int TotalCount)> GetPagedAsync(string? nome, int page, int pageSize)
+        {
+            var query = _context.Alojamentos.Include(a => a.Moradores).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(nome))
+            {
+                query = query.Where(a => a.Nome.Contains(nome));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(a => a.Nome)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
 
         public Task<Alojamento?> GetByUuidAsync(Guid uuid) =>
             _context.Alojamentos.FirstOrDefaultAsync(a => a.Uuid == uuid);

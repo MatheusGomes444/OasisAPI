@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OasisApi.Application.Dtos.Alojamentos;
+using OasisApi.Application.Dtos.Common;
 using OasisApi.Application.Dtos.Moradores;
 using OasisApi.Application.Services;
 using OasisApi.Domain.Enums;
@@ -18,11 +19,11 @@ namespace OasisApi.Controllers
             _alojamentoService = alojamentoService;
         }
 
-        // GET: api/alojamentos
+        // GET: api/alojamentos?nome=&page=&pageSize=
         [HttpGet]
-        public async Task<ActionResult<List<AlojamentoListItemDto>>> GetAlojamentos()
+        public async Task<ActionResult<PagedResultDto<AlojamentoListItemDto>>> GetAlojamentos([FromQuery] AlojamentoQueryDto query)
         {
-            return Ok(await _alojamentoService.GetAllAsync());
+            return Ok(await _alojamentoService.GetAllAsync(query));
         }
 
         // GET: api/alojamentos/{id}

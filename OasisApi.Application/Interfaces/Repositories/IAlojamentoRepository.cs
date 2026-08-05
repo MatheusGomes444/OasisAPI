@@ -4,7 +4,7 @@ namespace OasisApi.Application.Interfaces.Repositories
 {
     public interface IAlojamentoRepository
     {
-        Task<List<Alojamento>> GetAllWithMoradoresAsync();
+        Task<(List<Alojamento> Items, int TotalCount)> GetPagedAsync(string? nome, int page, int pageSize);
         Task<Alojamento?> GetByUuidAsync(Guid uuid);
         Task<Alojamento?> GetByUuidWithMoradoresAsync(Guid uuid);
         Task AddAsync(Alojamento alojamento);

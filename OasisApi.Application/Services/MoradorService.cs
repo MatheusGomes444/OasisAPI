@@ -1,3 +1,5 @@
+using OasisApi.Application.Common;
+using OasisApi.Application.Dtos.Common;
 using OasisApi.Application.Dtos.Moradores;
 using OasisApi.Application.Exceptions;
 using OasisApi.Application.Interfaces;
@@ -26,10 +28,18 @@ namespace OasisApi.Application.Services
             _currentUserService = currentUserService;
         }
 
-        public async Task<List<MoradorResponseDto>> GetAllAsync()
+        public async Task<PagedResultDto<MoradorResponseDto>> GetAllAsync(MoradorQueryDto query)
         {
-            var moradores = await _moradorRepository.GetAllAsync();
-            return moradores.Select(m => m.ToResponseDto()).ToList();
+            var (page, pageSize) = Paging.Normalize(query.Page, query.PageSize);
+            var (items, totalCount) = await _moradorRepository.GetPagedAsync(query.Nome, query.Ativo, page, pageSize);
+
+            return new PagedResultDto<MoradorResponseDto>
+            {
+                Items = items.Select(m => m.ToResponseDto()).ToList(),
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
         }
 
         public async Task<MoradorResponseDto> GetByIdAsync(Guid id)

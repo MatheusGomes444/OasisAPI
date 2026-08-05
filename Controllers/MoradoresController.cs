@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OasisApi.Application.Dtos.Common;
 using OasisApi.Application.Dtos.Moradores;
 using OasisApi.Application.Services;
 using OasisApi.Domain.Enums;
@@ -17,11 +18,11 @@ namespace OasisApi.Controllers
             _moradorService = moradorService;
         }
 
-        // GET: api/moradores
+        // GET: api/moradores?nome=&ativo=&page=&pageSize=
         [HttpGet]
-        public async Task<ActionResult<List<MoradorResponseDto>>> GetMoradores()
+        public async Task<ActionResult<PagedResultDto<MoradorResponseDto>>> GetMoradores([FromQuery] MoradorQueryDto query)
         {
-            return Ok(await _moradorService.GetAllAsync());
+            return Ok(await _moradorService.GetAllAsync(query));
         }
 
         // GET: api/moradores/MoradorbyId/{id}

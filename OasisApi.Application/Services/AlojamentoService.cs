@@ -1,4 +1,6 @@
+using OasisApi.Application.Common;
 using OasisApi.Application.Dtos.Alojamentos;
+using OasisApi.Application.Dtos.Common;
 using OasisApi.Application.Dtos.Moradores;
 using OasisApi.Application.Exceptions;
 using OasisApi.Application.Interfaces;
@@ -30,10 +32,18 @@ namespace OasisApi.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<AlojamentoListItemDto>> GetAllAsync()
+        public async Task<PagedResultDto<AlojamentoListItemDto>> GetAllAsync(AlojamentoQueryDto query)
         {
-            var alojamentos = await _alojamentoRepository.GetAllWithMoradoresAsync();
-            return alojamentos.Select(a => a.ToListItemDto()).ToList();
+            var (page, pageSize) = Paging.Normalize(query.Page, query.PageSize);
+            var (items, totalCount) = await _alojamentoRepository.GetPagedAsync(query.Nome, page, pageSize);
+
+            return new PagedResultDto<AlojamentoListItemDto>
+            {
+                Items = items.Select(a => a.ToListItemDto()).ToList(),
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
         }
 
         public async Task<AlojamentoResponseDto> GetByIdAsync(Guid id)
