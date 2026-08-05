@@ -12,7 +12,7 @@ using OasisApi.Data;
 namespace Oasis_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260805213436_InitialCreate")]
+    [Migration("20260805214603_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,12 +27,14 @@ namespace Oasis_API.Migrations
 
             modelBuilder.Entity("Morador", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("AlojamentoId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AlojamentoId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
@@ -71,17 +73,23 @@ namespace Oasis_API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("int");
 
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AlojamentoId");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
 
                     b.ToTable("Moradores", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            AlojamentoId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Id = 1,
+                            AlojamentoId = 1,
                             Ativo = true,
                             CPF = "12345678900",
                             Datanascimento = 0,
@@ -91,15 +99,18 @@ namespace Oasis_API.Migrations
                             Nome = "Pedro",
                             Observacoes = "Sem observações",
                             RG = "603456789",
-                            Telefone = 912345678
+                            Telefone = 912345678,
+                            Uuid = new Guid("22222222-2222-2222-2222-222222222222")
                         });
                 });
 
             modelBuilder.Entity("OasisApi.Models.Alojamento", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CapacidadeMaxima")
                         .HasColumnType("int");
@@ -133,14 +144,20 @@ namespace Oasis_API.Migrations
                     b.Property<int>("Telefone")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
 
                     b.ToTable("Alojamentos", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Id = 1,
                             CapacidadeMaxima = 10,
                             Email = "exemplo1@dominio.com",
                             Equipe = "Equipe A",
@@ -149,23 +166,29 @@ namespace Oasis_API.Migrations
                             Pet = "Apenas cães",
                             Refeicoes = "Café e janta",
                             Sexo = "Masculino",
-                            Telefone = 123456789
+                            Telefone = 123456789,
+                            Uuid = new Guid("11111111-1111-1111-1111-111111111111")
                         });
                 });
 
             modelBuilder.Entity("OasisApi.Models.FilaDeEspera", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("AlojamentoId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AlojamentoId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DataEntrada")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("MoradorId")
+                    b.Property<int>("MoradorId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -174,14 +197,19 @@ namespace Oasis_API.Migrations
 
                     b.HasIndex("MoradorId");
 
+                    b.HasIndex("Uuid")
+                        .IsUnique();
+
                     b.ToTable("FilasDeEspera", (string)null);
                 });
 
             modelBuilder.Entity("User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -195,7 +223,13 @@ namespace Oasis_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

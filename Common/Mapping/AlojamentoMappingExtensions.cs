@@ -10,7 +10,7 @@ namespace OasisApi.Common.Mapping
         {
             return new AlojamentoResponseDto
             {
-                Id = alojamento.Id,
+                Id = alojamento.Uuid,
                 Nome = alojamento.Nome,
                 Equipe = alojamento.Equipe,
                 Telefone = alojamento.Telefone,
@@ -28,7 +28,7 @@ namespace OasisApi.Common.Mapping
         {
             return new AlojamentoListItemDto
             {
-                Id = alojamento.Id,
+                Id = alojamento.Uuid,
                 Nome = alojamento.Nome,
                 CapacidadeMaxima = alojamento.CapacidadeMaxima,
                 QuantidadeMoradores = alojamento.Moradores.Count
@@ -68,10 +68,10 @@ namespace OasisApi.Common.Mapping
         {
             return new FilaDeEsperaResponseDto
             {
-                Id = filaDeEspera.Id,
-                MoradorId = filaDeEspera.MoradorId,
+                Id = filaDeEspera.Uuid,
+                MoradorId = filaDeEspera.Morador?.Uuid ?? Guid.Empty,
                 MoradorNome = filaDeEspera.Morador?.Nome,
-                AlojamentoId = filaDeEspera.AlojamentoId,
+                AlojamentoId = filaDeEspera.Alojamento?.Uuid ?? Guid.Empty,
                 DataEntrada = filaDeEspera.DataEntrada
             };
         }

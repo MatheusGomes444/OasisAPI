@@ -9,7 +9,7 @@ namespace OasisApi.Common.Mapping
         {
             return new MoradorResponseDto
             {
-                Id = morador.Id,
+                Id = morador.Uuid,
                 Nome = morador.Nome,
                 CPF = morador.CPF,
                 RG = morador.RG,
@@ -20,11 +20,13 @@ namespace OasisApi.Common.Mapping
                 Nacionalidade = morador.Nacionalidade,
                 Observacoes = morador.Observacoes,
                 Ativo = morador.Ativo,
-                AlojamentoId = morador.AlojamentoId,
+                AlojamentoId = morador.Alojamento?.Uuid ?? Guid.Empty,
                 AlojamentoNome = morador.Alojamento?.Nome
             };
         }
 
+        // AlojamentoId (int) precisa ser resolvido a partir do Uuid do alojamento
+        // pelo chamador (AlojamentoService/MoradorService) antes de persistir.
         public static Morador ToEntity(this MoradorCreateDto dto)
         {
             return new Morador
@@ -38,8 +40,7 @@ namespace OasisApi.Common.Mapping
                 Datanascimento = dto.Datanascimento,
                 Nacionalidade = dto.Nacionalidade,
                 Observacoes = dto.Observacoes,
-                Ativo = dto.Ativo,
-                AlojamentoId = dto.AlojamentoId
+                Ativo = dto.Ativo
             };
         }
 

@@ -15,7 +15,9 @@ namespace Oasis_API.Migrations
                 name: "Alojamentos",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Equipe = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Telefone = table.Column<int>(type: "int", nullable: false),
@@ -35,7 +37,9 @@ namespace Oasis_API.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -49,7 +53,9 @@ namespace Oasis_API.Migrations
                 name: "Moradores",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CPF = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true),
                     RG = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: true),
@@ -60,7 +66,7 @@ namespace Oasis_API.Migrations
                     Nacionalidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Observacoes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    AlojamentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    AlojamentoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,9 +83,11 @@ namespace Oasis_API.Migrations
                 name: "FilasDeEspera",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MoradorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AlojamentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MoradorId = table.Column<int>(type: "int", nullable: false),
+                    AlojamentoId = table.Column<int>(type: "int", nullable: false),
                     DataEntrada = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -99,13 +107,19 @@ namespace Oasis_API.Migrations
 
             migrationBuilder.InsertData(
                 table: "Alojamentos",
-                columns: new[] { "Id", "CapacidadeMaxima", "Email", "Equipe", "Nome", "Pertences", "Pet", "Refeicoes", "Sexo", "Telefone" },
-                values: new object[] { new Guid("11111111-1111-1111-1111-111111111111"), 10, "exemplo1@dominio.com", "Equipe A", "Albergue Vila Maria", "Roupas e sapatos", "Apenas cães", "Café e janta", "Masculino", 123456789 });
+                columns: new[] { "Id", "CapacidadeMaxima", "Email", "Equipe", "Nome", "Pertences", "Pet", "Refeicoes", "Sexo", "Telefone", "Uuid" },
+                values: new object[] { 1, 10, "exemplo1@dominio.com", "Equipe A", "Albergue Vila Maria", "Roupas e sapatos", "Apenas cães", "Café e janta", "Masculino", 123456789, new Guid("11111111-1111-1111-1111-111111111111") });
 
             migrationBuilder.InsertData(
                 table: "Moradores",
-                columns: new[] { "Id", "AlojamentoId", "Ativo", "CPF", "Datanascimento", "Endereco", "Idade", "Nacionalidade", "Nome", "Observacoes", "RG", "Telefone" },
-                values: new object[] { new Guid("22222222-2222-2222-2222-222222222222"), new Guid("11111111-1111-1111-1111-111111111111"), true, "12345678900", 0, "Rua Alcântara, 113", 18, "Brasileiro", "Pedro", "Sem observações", "603456789", 912345678 });
+                columns: new[] { "Id", "AlojamentoId", "Ativo", "CPF", "Datanascimento", "Endereco", "Idade", "Nacionalidade", "Nome", "Observacoes", "RG", "Telefone", "Uuid" },
+                values: new object[] { 1, 1, true, "12345678900", 0, "Rua Alcântara, 113", 18, "Brasileiro", "Pedro", "Sem observações", "603456789", 912345678, new Guid("22222222-2222-2222-2222-222222222222") });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Alojamentos_Uuid",
+                table: "Alojamentos",
+                column: "Uuid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_FilasDeEspera_AlojamentoId",
@@ -118,9 +132,27 @@ namespace Oasis_API.Migrations
                 column: "MoradorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FilasDeEspera_Uuid",
+                table: "FilasDeEspera",
+                column: "Uuid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Moradores_AlojamentoId",
                 table: "Moradores",
                 column: "AlojamentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Moradores_Uuid",
+                table: "Moradores",
+                column: "Uuid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Uuid",
+                table: "Users",
+                column: "Uuid",
+                unique: true);
         }
 
         /// <inheritdoc />

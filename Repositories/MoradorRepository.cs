@@ -14,18 +14,15 @@ namespace OasisApi.Repositories
         }
 
         public Task<List<Morador>> GetAllAsync() =>
-            _context.Moradores.ToListAsync();
+            _context.Moradores.Include(m => m.Alojamento).ToListAsync();
 
-        public Task<Morador?> GetByIdAsync(Guid id) =>
-            _context.Moradores.FirstOrDefaultAsync(m => m.Id == id);
+        public Task<Morador?> GetByUuidAsync(Guid uuid) =>
+            _context.Moradores.FirstOrDefaultAsync(m => m.Uuid == uuid);
 
-        public Task<Morador?> GetByIdWithAlojamentoAsync(Guid id) =>
-            _context.Moradores.Include(m => m.Alojamento).FirstOrDefaultAsync(m => m.Id == id);
+        public Task<Morador?> GetByUuidWithAlojamentoAsync(Guid uuid) =>
+            _context.Moradores.Include(m => m.Alojamento).FirstOrDefaultAsync(m => m.Uuid == uuid);
 
-        public Task<List<Morador>> GetByAlojamentoIdAsync(Guid alojamentoId) =>
-            _context.Moradores.Where(m => m.AlojamentoId == alojamentoId).ToListAsync();
-
-        public Task<int> CountByAlojamentoIdAsync(Guid alojamentoId) =>
+        public Task<int> CountByAlojamentoIdAsync(int alojamentoId) =>
             _context.Moradores.CountAsync(m => m.AlojamentoId == alojamentoId);
 
         public async Task AddAsync(Morador morador)

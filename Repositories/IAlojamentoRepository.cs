@@ -5,13 +5,15 @@ namespace OasisApi.Repositories
     public interface IAlojamentoRepository
     {
         Task<List<Alojamento>> GetAllWithMoradoresAsync();
-        Task<Alojamento?> GetByIdAsync(Guid id);
-        Task<Alojamento?> GetByIdWithMoradoresAsync(Guid id);
+        Task<Alojamento?> GetByUuidAsync(Guid uuid);
+        Task<Alojamento?> GetByUuidWithMoradoresAsync(Guid uuid);
         Task AddAsync(Alojamento alojamento);
         Task UpdateAsync(Alojamento alojamento);
         Task DeleteAsync(Alojamento alojamento);
 
         Task AddFilaDeEsperaAsync(FilaDeEspera filaDeEspera);
-        Task<List<FilaDeEspera>> GetFilaDeEsperaAsync(Guid alojamentoId);
+
+        // Chave interna (int) - nunca exposta pela API.
+        Task<List<FilaDeEspera>> GetFilaDeEsperaAsync(int alojamentoId);
     }
 }

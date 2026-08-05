@@ -15,10 +15,13 @@ namespace OasisApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasIndex(u => u.Uuid).IsUnique();
+
             // Configuração de Alojamento
             modelBuilder.Entity<Alojamento>().ToTable("Alojamentos");
             modelBuilder.Entity<Alojamento>().HasKey(a => a.Id);
-            modelBuilder.Entity<Alojamento>().Property(a => a.Nome).IsRequired(false).HasMaxLength(200);        
+            modelBuilder.Entity<Alojamento>().HasIndex(a => a.Uuid).IsUnique();
+            modelBuilder.Entity<Alojamento>().Property(a => a.Nome).IsRequired(false).HasMaxLength(200);
             modelBuilder.Entity<Alojamento>().Property(a => a.Equipe).HasMaxLength(100);
             modelBuilder.Entity<Alojamento>().Property(a => a.Telefone);
             modelBuilder.Entity<Alojamento>().Property(a => a.Email).HasMaxLength(100);
@@ -31,6 +34,7 @@ namespace OasisApi.Data
             // Configuração de Morador
             modelBuilder.Entity<Morador>().ToTable("Moradores");
             modelBuilder.Entity<Morador>().HasKey(m => m.Id);
+            modelBuilder.Entity<Morador>().HasIndex(m => m.Uuid).IsUnique();
             modelBuilder.Entity<Morador>().Property(m => m.Nome).IsRequired(false).HasMaxLength(200);
             modelBuilder.Entity<Morador>().Property(m => m.CPF).IsRequired(false).HasMaxLength(11);
             modelBuilder.Entity<Morador>().Property(m => m.RG).IsRequired(false).HasMaxLength(9);
@@ -48,6 +52,7 @@ namespace OasisApi.Data
             // Configuração de FilaDeEspera
             modelBuilder.Entity<FilaDeEspera>().ToTable("FilasDeEspera");
             modelBuilder.Entity<FilaDeEspera>().HasKey(f => f.Id);
+            modelBuilder.Entity<FilaDeEspera>().HasIndex(f => f.Uuid).IsUnique();
 
             // Relacionamento com Morador
             modelBuilder.Entity<FilaDeEspera>()
@@ -64,12 +69,11 @@ namespace OasisApi.Data
                 .OnDelete(DeleteBehavior.NoAction); // Evita exclusão em cascata
 
             // Dados iniciais para Alojamentos
-            var alojamentoSeedId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-
             modelBuilder.Entity<Alojamento>().HasData(
                 new Alojamento
                 {
-                    Id = alojamentoSeedId,
+                    Id = 1,
+                    Uuid = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                     Nome = "Albergue Vila Maria",
                     Equipe = "Equipe A",
                     Telefone = 123456789,
@@ -86,7 +90,8 @@ namespace OasisApi.Data
             modelBuilder.Entity<Morador>().HasData(
                 new Morador
                 {
-                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                    Id = 1,
+                    Uuid = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                     Nome = "Pedro",
                     CPF = "12345678900",
                     RG = "603456789",
@@ -96,7 +101,7 @@ namespace OasisApi.Data
                     Datanascimento = 0,
                     Nacionalidade = "Brasileiro",
                     Observacoes = "Sem observações",
-                    AlojamentoId = alojamentoSeedId,
+                    AlojamentoId = 1,
                     Ativo = true
                 }
             );
