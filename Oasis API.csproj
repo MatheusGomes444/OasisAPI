@@ -8,15 +8,33 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <!-- Necessário aqui porque o dotnet-ef precisa enxergar o pacote Design a partir do
+         projeto de inicialização, mesmo com o DataContext vivendo na Infrastructure. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="OasisApi.Application\OasisApi.Application.csproj" />
+    <ProjectReference Include="OasisApi.Infrastructure\OasisApi.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <!-- Este projeto vive na raiz do repo, junto com as pastas dos outros projetos da solução.
+       Sem isso, o glob padrão (**/*.cs) varre pra dentro delas também. -->
+  <ItemGroup>
+    <Compile Remove="OasisApi.Domain\**\*.cs" />
+    <Compile Remove="OasisApi.Application\**\*.cs" />
+    <Compile Remove="OasisApi.Infrastructure\**\*.cs" />
+    <Content Remove="OasisApi.Domain\**\*" />
+    <Content Remove="OasisApi.Application\**\*" />
+    <Content Remove="OasisApi.Infrastructure\**\*" />
+    <None Remove="OasisApi.Domain\**\*" />
+    <None Remove="OasisApi.Application\**\*" />
+    <None Remove="OasisApi.Infrastructure\**\*" />
   </ItemGroup>
 
 </Project>

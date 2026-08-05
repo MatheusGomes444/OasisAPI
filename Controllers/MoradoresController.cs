@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OasisApi.Dtos.Moradores;
-using OasisApi.Services;
+using OasisApi.Application.Dtos.Moradores;
+using OasisApi.Application.Services;
 
 namespace OasisApi.Controllers
 {

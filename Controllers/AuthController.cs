@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using OasisApi.Dtos.Auth;
-using OasisApi.Services;
+using OasisApi.Application.Dtos.Auth;
+using OasisApi.Application.Services;
 
 namespace OasisApi.Controllers
 {
