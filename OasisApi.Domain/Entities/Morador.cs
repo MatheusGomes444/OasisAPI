@@ -3,7 +3,7 @@ namespace OasisApi.Domain.Entities;
 public class Morador
 {
     public int Id { get; set; }
-    public Guid Uuid { get; set; } = Guid.NewGuid();
+    public Guid Uuid { get; set; } = UuidV7.NewGuid();
     public string Nome { get; set; } = string.Empty;
     public string CPF { get; set; } = string.Empty;
     public string RG { get; set; } = string.Empty;
